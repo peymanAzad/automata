@@ -10,6 +10,9 @@ namespace formal_language_automata
     {
         public Machine(string path)
         {
+            Alphabet = new List<string>();
+            States = new List<IState>();
+            Vectors = new List<IVector>();
             string[] lines = System.IO.File.ReadAllLines(path);
             foreach (var line in lines)
             {
@@ -34,7 +37,8 @@ namespace formal_language_automata
                         }
                         break;
                     case "alphabet":
-                        Alphabet.Add(parts[1]);
+                        var alphabet = parts[1].Split(',');
+                        Alphabet.AddRange(alphabet);
                         break;
                 }
             }
@@ -82,7 +86,13 @@ namespace formal_language_automata
             {
                 if (States.Contains(state))
                 {
+                    var relations = Vectors.Where(t => t.State1 == state || t.State2 == state).ToList();
+                    foreach (var relation in relations)
+                    {
+                        Vectors.Remove(relation);
+                    }
                     return States.Remove(state);
+                    
                 }
                 else
                 {
@@ -100,16 +110,15 @@ namespace formal_language_automata
             var vectors = new List<IVector>(Vectors);
             try
             {
-                foreach (var state in States)
+                var dstates = vectors.Where(t => t.State1 == t.State2 && !t.State2.IsFinal && !t.State2.IsStart).Select(s => s.State1).Distinct();
+                foreach (var d in dstates)
                 {
-                    if (vectors.Where(t => t.State1 == state).All(a => a.State2 == state))
-                    {
-                        States.Remove(state);
-                    }
+                    RemoveState(d);
                 }
+                
                 return vectors;
             }
-            catch
+            catch(Exception ex)
             {
                 throw new Exception("Removing D stats failed");
             }

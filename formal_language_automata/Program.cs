@@ -10,6 +10,11 @@ namespace formal_language_automata
     {
         static void Main(string[] args)
         {
+            var path =
+                @"c:\users\peyman!\documents\visual studio 2015\Projects\formal_language_automata\formal_language_automata\data.txt";
+            var machine = new Machine(path);
+            Console.WriteLine(machine.ToGrammer().ToString());
+            Console.ReadKey();
         }
     }
 }
