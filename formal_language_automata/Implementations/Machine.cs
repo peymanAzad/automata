@@ -10,11 +10,38 @@ namespace formal_language_automata
     {
         public Machine(string path)
         {
-            //TODO:from path create states and vectors and alphabet
+            string[] lines = System.IO.File.ReadAllLines(path);
+            foreach (var line in lines)
+            {
+                var parts = line.Split(' ');
+                var command = parts[0];
+                switch (command)
+                {
+                    case "state":
+                        var state = new State() {Name = parts[1], IsStart = line.Contains("-start"), IsFinal = line.Contains("-final")};
+                        this.AddState(state);
+                        break;
+                    case "vector":
+                        var name1 = parts[1];
+                        var name2 = parts[2];
+                        var parameter = parts[3];
+                        var state1 = States.SingleOrDefault(u => u.Name == name1);
+                        var state2 = States.SingleOrDefault(o => o.Name == name2);
+                        if (state1 != null && state2 != null &&
+                            Alphabet.Contains(parameter))
+                        {
+                            this.AddVector(state1, state2, parameter);
+                        }
+                        break;
+                    case "alphabet":
+                        Alphabet.Add(parts[1]);
+                        break;
+                }
+            }
         }
         public List<IState> States { get; set; }
         public List<IVector> Vectors { get; set; }
-        public string[] Alphabet { get; set; }
+        public List<string> Alphabet { get; set; }
         public bool AddState(IState state)
         {
             try
