@@ -1,0 +1,6 @@
+c:\users\peyman!\documents\visual studio 2015\Projects\formal_language_automata\formal_language_automata\bin\Debug\formal_language_automata.exe.config
+c:\users\peyman!\documents\visual studio 2015\Projects\formal_language_automata\formal_language_automata\bin\Debug\formal_language_automata.exe
+c:\users\peyman!\documents\visual studio 2015\Projects\formal_language_automata\formal_language_automata\bin\Debug\formal_language_automata.pdb
+c:\users\peyman!\documents\visual studio 2015\Projects\formal_language_automata\formal_language_automata\obj\Debug\formal_language_automata.csprojResolveAssemblyReference.cache
+c:\users\peyman!\documents\visual studio 2015\Projects\formal_language_automata\formal_language_automata\obj\Debug\formal_language_automata.exe
+c:\users\peyman!\documents\visual studio 2015\Projects\formal_language_automata\formal_language_automata\obj\Debug\formal_language_automata.pdb
