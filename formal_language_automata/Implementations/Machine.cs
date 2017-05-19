@@ -110,10 +110,12 @@ namespace formal_language_automata
             var vectors = new List<IVector>(Vectors);
             try
             {
-                var dstates = vectors.Where(t => t.State1 == t.State2 && !t.State2.IsFinal && !t.State2.IsStart).Select(s => s.State1).Distinct();
-                foreach (var d in dstates)
+                var dstates = vectors.Where(t => t.State1 == t.State2 && !t.State2.IsFinal && !t.State2.IsStart).Select(s => s.State1).Distinct().ToList();
+                for(var i = 0; i < dstates.Count(); i++)
                 {
-                    RemoveState(d);
+                    var d = dstates[i];
+                    var relations = vectors.RemoveAll(t => t.State1 == d || t.State2 == d);
+                    States.Remove(d);
                 }
                 
                 return vectors;

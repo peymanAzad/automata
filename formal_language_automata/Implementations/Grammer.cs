@@ -40,10 +40,10 @@ namespace formal_language_automata
             {
                 foreach (var vector in group)
                 {
-                    result += String.Format("{0} -> {1}{2}\n", vector.State1.Name, vector.Parameter, vector.State2.Name);
+                    result += String.Format("{0} -> {1} {2}\n", vector.State1.Name, vector.Parameter, vector.State2.Name);
                 }
             }
-            var finals = Vectors.Where(t => t.State2.IsFinal).Distinct().Select(t => t.State2);
+            var finals = Vectors.Where(t => t.State2.IsFinal).Select(t => t.State2).Distinct();
             foreach (var final in finals)
             {
                 result += String.Format("{0} -> λ\n", final.Name);
