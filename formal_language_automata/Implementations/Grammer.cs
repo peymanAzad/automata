@@ -20,12 +20,32 @@ namespace formal_language_automata
         public List<IVector> Vectors { get; set; }
         public bool AddRule(IVector rule)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (rule.State1 != null && rule.State2 != null)
+                {
+                    Vectors.Add(rule);
+                    return true;
+                }
+                else return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public bool RemoveRule(IVector rule)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Vectors.Remove(rule);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public override string ToString()
