@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,11 +9,14 @@ namespace formal_language_automata
 {
     class Machine : IMachine
     {
-        public Machine(string path)
+        public Machine()
         {
             Alphabet = new List<string>();
             States = new List<IState>();
             Vectors = new List<IVector>();
+        }
+        public Machine(string path):this()
+        {
             string[] lines = System.IO.File.ReadAllLines(path);
             foreach (var line in lines)
             {
@@ -131,6 +135,38 @@ namespace formal_language_automata
             var rules = this.RemoveDStates();
             var grammer = new Grammer(rules);
             return grammer;
+        }
+
+        public static IMachine Nfa2Dfa(IMachine nfa)
+        {
+            var dfa = new Machine();
+            var startstates = nfa.States.Where(t => t.IsStart).ToList();
+            ProcessVectors(dfa, startstates, nfa);
+            
+            return dfa;
+        }
+
+        private static IState ProcessVectors(IMachine machine, List<IState> currentStates, IMachine nfa)
+        {
+            var state = new State()
+            {
+                IsStart = currentStates.All(t => t.IsStart),
+                IsFinal = currentStates.Any(t => t.IsFinal),
+                Name = String.Concat(currentStates.Select(s => s.Name).Distinct())
+            };
+            machine.AddState(state);
+            var vectorsG = nfa.Vectors.Where(t => currentStates.Contains(t.State1)).GroupBy(g => g.Parameter);
+            foreach (var vectors in vectorsG)
+            {
+                var name = String.Concat(vectors.Select(s => s.State2.Name).Distinct());
+                var newstate = machine.States.SingleOrDefault(a => a.Name == name);
+                if (newstate == null)
+                {
+                    newstate = ProcessVectors(machine, vectors.Select(t => t.State2).ToList(), nfa);
+                }
+                machine.AddVector(state, newstate, vectors.Key);
+            }
+            return state;
         }
     }
 }
