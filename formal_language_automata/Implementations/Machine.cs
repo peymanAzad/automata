@@ -140,9 +140,10 @@ namespace formal_language_automata
         public static IMachine Nfa2Dfa(IMachine nfa)
         {
             var dfa = new Machine();
+            dfa.Alphabet = nfa.Alphabet;
             var startstates = nfa.States.Where(t => t.IsStart).ToList();
             ProcessVectors(dfa, startstates, nfa);
-            
+            AddDState(dfa);
             return dfa;
         }
 
@@ -167,6 +168,34 @@ namespace formal_language_automata
                 machine.AddVector(state, newstate, vectors.Key);
             }
             return state;
+        }
+
+        private static void AddDState(IMachine machine)
+        {
+            var numStates = machine.States.Count;
+            var numVectors = machine.Vectors.Count;
+            if (numVectors < numStates*machine.Alphabet.Count)
+            {
+                var dState = new State() {IsFinal = false, IsStart = false, Name = "D"};
+                machine.AddState(dState);
+                foreach (var alpha in machine.Alphabet)
+                {
+                    machine.AddVector(dState, dState, alpha);
+                }
+                var vecG = machine.Vectors.GroupBy(g => g.State1);
+                foreach (var vectors in vecG)
+                {
+                    if (vectors.Count() < machine.Alphabet.Count)
+                    {
+                        var inputs = vectors.Select(s => s.Parameter).Distinct();
+                        var dInputs = machine.Alphabet.Where(t => !inputs.Contains(t)).ToList().Distinct();
+                        foreach (var dInput in dInputs)
+                        {
+                            machine.AddVector(vectors.Key, dState, dInput);
+                        }
+                    }
+                }
+            }
         }
     }
 }
