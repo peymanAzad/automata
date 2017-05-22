@@ -137,6 +137,99 @@ namespace formal_language_automata
             return grammer;
         }
 
+        public string ToRegX()
+        {
+            Vectors = RemoveDStates();
+            var finishStates = States.Where(t => t.IsFinal).ToList();
+            var result = String.Empty;
+            if (finishStates.Count > 1)
+            {
+                foreach (var finishState in finishStates)
+                {
+                    var machnie = new Machine
+                    {
+                        Vectors = new List<IVector>(Vectors),
+                        States = new List<IState>(States)
+                    };
+                    machnie.States.ForEach(f => f.IsFinal = false);
+                    machnie.States.Single(s => s.Name == finishState.Name).IsFinal = true;
+                    result += machnie.ToRegX() + "+";
+                }
+                result = result.Remove(result.Length - 1, 1);
+            }
+            else if (finishStates.Count == 1)
+            {
+                while (States.Count(t => !t.IsFinal && !t.IsStart) > 0)
+                {
+                    var middleState = States.FirstOrDefault(t => !t.IsFinal && !t.IsStart);
+                    if (middleState != null)
+                    {
+                        var vectors1 = Vectors.Where(t => t.State1 == middleState).ToList();
+                        var vectors2 = Vectors.Where(t => t.State2 == middleState).ToList();
+                        foreach (var v2 in vectors2)
+                        {
+                            foreach (var v1 in vectors1)
+                            {
+                                var parameter = v2.Parameter;
+                                var loop =
+                                    Vectors.Where(t => t.State1 == middleState && t.State2 == middleState).ToList();
+                                parameter = loop.Aggregate(parameter, (current, vl) => current + String.Format("{0}*", vl.Parameter));
+                                parameter += v1.Parameter;
+
+                                AddVector(v2.State1, v1.State2, parameter);
+                            }
+                        }
+                        RemoveState(middleState);
+                    }
+                }
+                var startState = States.Single(t => t.IsStart);
+                var finishState = States.Single(t => t.IsFinal);
+
+                var startStart = Vectors.Where(t => t.State1 == startState && t.State2 == startState).ToList();
+                var startFinish = Vectors.Where(t => t.State1 == startState && t.State2 == finishState).ToList();
+                var finishStart = Vectors.Where(t => t.State1 == finishState && t.State2 == startState).ToList();
+                var finishFinish = Vectors.Where(t => t.State1 == finishState && t.State2 == finishState).ToList();
+
+                if (startStart.Count > 0)
+                {
+                    result += "(";
+                    result = startStart.Aggregate(result, (current, ss) => current + (ss.Parameter + "+"));
+                    result = result.Remove(result.Length - 1, 1);
+                    result += ")*";
+                }
+
+                if (startState == finishState && startStart.Count == 1 && startFinish.Count == 1 &&
+                    finishStart.Count == 1 && finishFinish.Count == 1) return result;
+
+                if (startFinish.Count > 0)
+                {
+                    result += "(";
+                    result = startFinish.Aggregate(result, (current, ss) => current + (ss.Parameter + "+"));
+                    result = result.Remove(result.Length - 1, 1);
+                    result += ")";
+                }
+
+                if (finishFinish.Count > 0)
+                {
+                    result += "(";
+                    result = finishFinish.Aggregate(result, (current, ss) => current + (ss.Parameter + "+"));
+                    result = result.Remove(result.Length - 1, 1);
+                    result += ")*";
+                }
+
+                if (finishStart.Count > 0)
+                {
+                    var temp = result;
+                    result += "((";
+                    result = finishStart.Aggregate(result, (current, ss) => current + (ss.Parameter + "+"));
+                    result = result.Remove(result.Length - 1, 1);
+                    result += ")";
+                    result += temp + ")*";
+                }
+            }
+            return result;
+        }
+
         public static IMachine Nfa2Dfa(IMachine nfa)
         {
             var dfa = new Machine();

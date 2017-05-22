@@ -16,5 +16,6 @@ namespace formal_language_automata
         bool RemoveState(IState state);
         List<IVector> RemoveDStates();
         IGrammer ToGrammer();
+        string ToRegX();
     }
 }
