@@ -14,7 +14,7 @@ namespace formal_language_automata
         bool AddState(IState state);
         bool AddVector(IState state1, IState state2, string parameter);
         bool RemoveState(IState state);
-        List<IVector> RemoveDStates();
+        void RemoveDStates();
         IGrammer ToGrammer();
         string ToRegX();
     }

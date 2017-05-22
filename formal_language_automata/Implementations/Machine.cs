@@ -109,20 +109,17 @@ namespace formal_language_automata
             }
         }
 
-        public List<IVector> RemoveDStates()
+        public void RemoveDStates()
         {
-            var vectors = new List<IVector>(Vectors);
             try
             {
-                var dstates = vectors.Where(t => t.State1 == t.State2 && !t.State2.IsFinal && !t.State2.IsStart).Select(s => s.State1).Distinct().ToList();
+                var dstates = Vectors.Where(t => t.State1 == t.State2 && !t.State2.IsFinal && !t.State2.IsStart).Select(s => s.State1).Distinct().ToList();
                 for(var i = 0; i < dstates.Count(); i++)
                 {
                     var d = dstates[i];
-                    var relations = vectors.RemoveAll(t => t.State1 == d || t.State2 == d);
+                    var relations = Vectors.RemoveAll(t => t.State1 == d || t.State2 == d);
                     States.Remove(d);
                 }
-                
-                return vectors;
             }
             catch(Exception ex)
             {
@@ -130,16 +127,31 @@ namespace formal_language_automata
             }
         }
 
+        public override string ToString()
+        {
+            var output = String.Format("alphabet {0}\n", String.Join(",", Alphabet));
+            foreach (var state in States)
+            {
+                output += String.Format("state {0} {1} {2}\n", state.Name, state.IsStart ? "-start" : String.Empty,
+                    state.IsFinal ? "-final" : String.Empty);
+            }
+            foreach (var vector in Vectors)
+            {
+                output += String.Format("vector {0} {1} {2}\n", vector.State1.Name, vector.State2.Name, vector.Parameter);
+            }
+            return output;
+        }
+
         public IGrammer ToGrammer()
         {
-            var rules = this.RemoveDStates();
-            var grammer = new Grammer(rules);
+            this.RemoveDStates();
+            var grammer = new Grammer(Vectors);
             return grammer;
         }
 
         public string ToRegX()
         {
-            Vectors = RemoveDStates();
+            RemoveDStates();
             var finishStates = States.Where(t => t.IsFinal).ToList();
             var result = String.Empty;
             if (finishStates.Count > 1)

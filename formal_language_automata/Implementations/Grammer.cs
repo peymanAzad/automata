@@ -52,7 +52,7 @@ namespace formal_language_automata
         {
             string result = String.Empty;
             IVector start;
-            start = Vectors.Single(t => t.State1.IsStart);
+            start = Vectors.First(t => t.State1.IsStart);
             Vectors.Remove(start);
             Vectors.Insert(0, start);
             var groups = Vectors.GroupBy(t => t.State1);
