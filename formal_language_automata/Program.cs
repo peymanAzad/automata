@@ -7,7 +7,7 @@ namespace formal_language_automata
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
-            
+
             var path = args[0];
             string command;
             do
@@ -26,6 +26,7 @@ namespace formal_language_automata
                         Console.WriteLine(dfa.ToGrammer().ToString());
                         break;
                     case "printregx":
+                        dfa.RemoveDStates();
                         Console.WriteLine(dfa.ToRegX());
                         break;
                 }

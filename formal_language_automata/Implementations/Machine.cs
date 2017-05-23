@@ -113,10 +113,22 @@ namespace formal_language_automata
         {
             try
             {
-                var dstates = Vectors.Where(t => t.State1 == t.State2 && !t.State2.IsFinal && !t.State2.IsStart).Select(s => s.State1).Distinct().ToList();
-                for(var i = 0; i < dstates.Count(); i++)
+                var loop = Vectors.Where(t => t.State1 == t.State2 && !t.State2.IsFinal && !t.State2.IsStart).Select(s => s.State1).Distinct().ToList();
+                var dlist = new List<IState>();
+                foreach (var state in loop)
                 {
-                    var d = dstates[i];
+                    var flag = Alphabet.All(alpha => Vectors.Any(a => a.State1 == state && a.State2 == state && a.Parameter == alpha));
+                    if (flag)
+                    {
+                        if (Vectors.Where(t => t.State1 == state).All(a => a.State1 == a.State2))
+                        {
+                            dlist.Add(state);
+                        }
+                    }
+                }
+                for(var i = 0; i < dlist.Count(); i++)
+                {
+                    var d = dlist[i];
                     var relations = Vectors.RemoveAll(t => t.State1 == d || t.State2 == d);
                     States.Remove(d);
                 }
@@ -151,7 +163,7 @@ namespace formal_language_automata
 
         public string ToRegX()
         {
-            RemoveDStates();
+            //RemoveDStates();
             var finishStates = States.Where(t => t.IsFinal).ToList();
             var result = String.Empty;
             if (finishStates.Count > 1)
