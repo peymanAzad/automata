@@ -163,7 +163,7 @@ namespace formal_language_automata
 
         public string ToRegX()
         {
-            //RemoveDStates();
+            RemoveDStates();
             var finishStates = States.Where(t => t.IsFinal).ToList();
             var result = String.Empty;
             if (finishStates.Count > 1)
@@ -177,7 +177,8 @@ namespace formal_language_automata
                     };
                     machnie.States.ForEach(f => f.IsFinal = false);
                     machnie.States.Single(s => s.Name == finishState.Name).IsFinal = true;
-                    result += machnie.ToRegX() + "+";
+                    var regx = machnie.ToRegX();
+                    result += (regx == String.Empty ? "?" : regx) + "+";
                 }
                 result = result.Remove(result.Length - 1, 1);
             }
@@ -197,7 +198,7 @@ namespace formal_language_automata
                                 var parameter = v2.Parameter;
                                 var loop =
                                     Vectors.Where(t => t.State1 == middleState && t.State2 == middleState).ToList();
-                                parameter = loop.Aggregate(parameter, (current, vl) => current + String.Format("{0}*", vl.Parameter));
+                                parameter = loop.Aggregate(parameter, (current, vl) => current + String.Format("({0})*", vl.Parameter));
                                 parameter += v1.Parameter;
 
                                 AddVector(v2.State1, v1.State2, parameter);
@@ -269,13 +270,13 @@ namespace formal_language_automata
             {
                 IsStart = currentStates.All(t => t.IsStart),
                 IsFinal = currentStates.Any(t => t.IsFinal),
-                Name = String.Concat(currentStates.Select(s => s.Name).Distinct())
+                Name = String.Concat(currentStates.Select(s => s.Name).OrderBy(o => o).Distinct())
             };
             machine.AddState(state);
             var vectorsG = nfa.Vectors.Where(t => currentStates.Contains(t.State1)).GroupBy(g => g.Parameter);
             foreach (var vectors in vectorsG)
             {
-                var name = String.Concat(vectors.Select(s => s.State2.Name).Distinct());
+                var name = String.Concat(vectors.Select(s => s.State2.Name).OrderBy(o => o).Distinct());
                 var newstate = machine.States.SingleOrDefault(a => a.Name == name);
                 if (newstate == null)
                 {

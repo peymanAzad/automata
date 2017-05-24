@@ -8,7 +8,17 @@ namespace formal_language_automata
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
 
-            var path = args[0];
+            string path;
+            if (args.Length != 0)
+            {
+                path = args[0];
+            }
+            else
+            {
+                Console.WriteLine("Enter Machine Path");
+                path = Console.ReadLine();
+            }
+
             string command;
             do
             {
