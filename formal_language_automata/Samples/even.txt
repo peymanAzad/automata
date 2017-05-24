@@ -1,0 +1,13 @@
+alphabet a,b
+state q0 -start
+state q1 -final
+state q2
+state q3
+vector q0 q1 b
+vector q0 q2 a
+vector q1 q0 b
+vector q1 q3 a
+vector q2 q0 a
+vector q2 q3 b
+vector q3 q1 a
+vector q3 q2 b

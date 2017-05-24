@@ -1,0 +1,9 @@
+alphabet 0,1
+state q0 -start
+state q1
+state q2 -final
+vector q0 q1 1
+vector q0 q2 1
+vector q1 q1 0
+vector q1 q2 1
+vector q2 q0 0

@@ -58,8 +58,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data.txt" />
-    <Content Include="data2.txt" />
+    <Content Include="Samples\data.txt" />
+    <Content Include="Samples\data2.txt" />
+    <Content Include="Samples\even.txt" />
+    <Content Include="Samples\evenlength.txt" />
+    <Content Include="Samples\nfa2dfa.txt" />
+    <Content Include="Samples\nfa2regx.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
