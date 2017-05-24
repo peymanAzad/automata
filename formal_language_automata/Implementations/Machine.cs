@@ -188,8 +188,8 @@ namespace formal_language_automata
                     var middleState = States.FirstOrDefault(t => !t.IsFinal && !t.IsStart);
                     if (middleState != null)
                     {
-                        var vectors1 = Vectors.Where(t => t.State1 == middleState).ToList();
-                        var vectors2 = Vectors.Where(t => t.State2 == middleState).ToList();
+                        var vectors1 = Vectors.Where(t => t.State1 == middleState && t.State2 != middleState).ToList();
+                        var vectors2 = Vectors.Where(t => t.State2 == middleState && t.State1 != middleState).ToList();
                         foreach (var v2 in vectors2)
                         {
                             foreach (var v1 in vectors1)
@@ -222,8 +222,7 @@ namespace formal_language_automata
                     result += ")*";
                 }
 
-                if (startState == finishState && startStart.Count == 1 && startFinish.Count == 1 &&
-                    finishStart.Count == 1 && finishFinish.Count == 1) return result;
+                if (startState == finishState) return result;
 
                 if (startFinish.Count > 0)
                 {
