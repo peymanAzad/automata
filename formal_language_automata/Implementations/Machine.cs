@@ -198,7 +198,10 @@ namespace formal_language_automata
                                 var parameter = v2.Parameter;
                                 var loop =
                                     Vectors.Where(t => t.State1 == middleState && t.State2 == middleState).ToList();
-                                parameter = loop.Aggregate(parameter, (current, vl) => current + String.Format("({0})*", vl.Parameter));
+                                if (loop.Count > 0)
+                                {
+                                    parameter += String.Format("({0})*", String.Join("+", loop.Select(t => t.Parameter)));
+                                }
                                 parameter += v1.Parameter;
 
                                 AddVector(v2.State1, v1.State2, parameter);

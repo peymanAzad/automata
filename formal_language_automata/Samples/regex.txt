@@ -1,0 +1,13 @@
+alphabet a,b
+state A -start
+state B -final
+state C 
+state F
+vector A B b
+vector A C a
+vector B F a
+vector B A b
+vector C C a
+vector C F b
+vector F C b
+vector F B a

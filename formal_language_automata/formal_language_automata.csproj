@@ -62,8 +62,10 @@
     <Content Include="Samples\data2.txt" />
     <Content Include="Samples\even.txt" />
     <Content Include="Samples\evenlength.txt" />
+    <Content Include="Samples\loop.txt" />
     <Content Include="Samples\nfa2dfa.txt" />
     <Content Include="Samples\nfa2regx.txt" />
+    <Content Include="Samples\regex.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

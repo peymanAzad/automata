@@ -15,7 +15,7 @@ namespace formal_language_automata
             }
             else
             {
-                Console.WriteLine("Enter Machine Path");
+                Console.WriteLine("Enter Input File Path:");
                 path = Console.ReadLine();
             }
 
